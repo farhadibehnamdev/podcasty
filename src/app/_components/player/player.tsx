@@ -1,41 +1,75 @@
 "use client";
-import "@vidstack/react/player/styles/base.css";
+import React from "react";
 import {
   MediaPlayer,
-  MediaPlayerInstance,
+  type MediaPlayerInstance,
   MediaProvider,
+  Track,
 } from "@vidstack/react";
 import { AudioLayout } from "./_components/layouts/audio-layout";
-import { Transcript } from "../transcript/transcript";
 import useTranscriptQuery from "@/hooks/useTranscriptQuery";
 import { useParams } from "next/navigation";
-import { Spinner } from "@nextui-org/react";
-import React from "react";
+import { Transcript } from "../transcript/transcript";
+import { LineSkeleton } from "../skeleton";
 
+// Main Player component
 export const Player = () => {
   const { id } = useParams();
-  const { data } = useTranscriptQuery(id);
+  const { data, error, isFetching, isLoading } = useTranscriptQuery(
+    id as string
+  );
   const player = React.useRef<MediaPlayerInstance>(null);
+  const transformedContent = React.useMemo(() => {
+    if (data && Array.isArray(data) && data.length > 0) {
+      return {
+        cues: data[0].transcript_timing.map((sentence) => ({
+          startTime: sentence.start_time_sec,
+          endTime: sentence.end_time_sec,
+          text: sentence.sentense_words
+            .map((item) => {
+              const res =
+                item?.word?.text === " " || item?.word?.wid
+                  ? item?.word?.text
+                  : item.phrase?.content.map((item) => item?.word?.text);
+              return res;
+            })
+            .join(""),
+        })),
+      };
+    }
+  }, [data]); //
 
-  // React.useEffect(() => {
-  //   // Subscribe for updates without triggering renders.
-  //   return player.current!.subscribe(({ currentTime }) => {
-  //     console.log("currentTIME :: ", currentTime);
-  //   });
-  // }, []);
-  if (!data) return <Spinner className="container" />;
-  console.log("audio_url :: ", data[0].audio_url);
   return (
     <MediaPlayer
       title="Sprite Fight"
-      className="flex flex-col "
-      src={data[0].audio_url}
+      className="flex flex-col"
+      src={data ? data[0].audio_url : ""}
       ref={player}
     >
-      <Transcript transcript={data[0].transcript_timing} />
       <MediaProvider>
-        <AudioLayout />
+        <Track
+          content={transformedContent}
+          label="English"
+          kind="captions"
+          lang="en-US"
+          default
+          type="json"
+        />
       </MediaProvider>
+      {isLoading || isFetching ? (
+        <LineSkeleton />
+      ) : error ? (
+        "Error "
+      ) : data?.[0].transcript_timing ? (
+        <Transcript transcript={data[0].transcript_timing} />
+      ) : (
+        <LineSkeleton />
+      )}
+      <AudioLayout
+        isLoading={isLoading}
+        isFetching={isFetching}
+        error={error!}
+      />
     </MediaPlayer>
   );
 };

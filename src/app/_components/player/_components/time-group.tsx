@@ -1,10 +1,11 @@
-import { Time } from '@vidstack/react';
+import { Time } from "@vidstack/react";
+import { ReactNode } from "react";
 
-export function TimeGroup() {
+export function TimeGroup({ children }: { children: ReactNode }) {
   return (
     <div className="ml-1.5 flex items-center text-sm font-medium">
       <Time className="time" type="current" />
-      <div className="mx-1 text-white/80">/</div>
+      {children}
       <Time className="time" type="duration" />
     </div>
   );
