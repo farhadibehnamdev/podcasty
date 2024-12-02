@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -7,7 +8,6 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "xdsqniswbvyacebjropq.supabase.co",
-        pathname: "/storage/**",
       },
     ],
   },
