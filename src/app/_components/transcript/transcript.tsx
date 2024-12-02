@@ -1,157 +1,125 @@
-// "use client";
-// import React from "react";
-// import { useVirtualizer } from "@tanstack/react-virtual";
-// import { EpisodeData, TranscriptWord } from "@/types/episode.interface";
+import type { Sentense, SentenseWords } from "@/types/episode.interface";
+import { ScrollShadow } from "@nextui-org/react";
+import {
+  useActiveTextCues,
+  useActiveTextTrack,
+  useMediaPlayer,
+} from "@vidstack/react";
+import React from "react";
+import { Virtuoso } from "react-virtuoso";
+import { useUserSelectedWordStore } from "@/stores/word-selected.store";
+export const Transcript = ({ transcript }: { transcript: Sentense[] }) => {
+  const activeTextTrack = useActiveTextTrack("captions");
+  const activeCues = useActiveTextCues(activeTextTrack);
+  const player = useMediaPlayer();
+  const [allCues, setAllCues] = React.useState<VTTCue[]>([]);
+  const activeRef = React.useRef<HTMLDivElement>(null);
+  const { addSelectedWord, words } = useUserSelectedWordStore((state) => state);
 
-// export const Transcript = ({ transcript }: { transcript: EpisodeData }) => {
-//   const parentRef = React.useRef<HTMLDivElement>(null);
-//   const items = Object.entries(transcript).map((item) => {
-//     const transcriptWord = item[1].TranscriptWord.map(
-//       (word: TranscriptWord) => {
-//         return {
-//           wid: word.wid,
-//           text: word.text,
-//         };
-//       }
-//     );
-//     return {
-//       sentense_id: item[0],
-//       ...transcriptWord,
-//     };
-//   });
-//   // const items = transcript.transcript_timing.map(
-//   //   (sentense: TranscriptJsonb) => {
-//   //     return sentense.TranscriptWord.map((word) => {
-//   //       return {
-//   //         sentense_id: sentense.sentense_id,
-//   //         wid: word.wid,
-//   //         text: word.text,
-//   //       };
-//   //     });
-//   //   }
-//   // );
-//   const rowVirtualizer = useVirtualizer({
-//     count: items.length,
-//     getScrollElement: () => parentRef.current,
-//     estimateSize: () => 35,
-//     overscan: 5,
-//   });
+  React.useEffect(() => {
+    console.log("words :: ", words);
+  }, [words]);
+  // Get all cues when text track is loaded
+  React.useEffect(() => {
+    if (activeTextTrack) {
+      setAllCues(Array.from(activeTextTrack.cues || []) as VTTCue[]);
+    }
+  }, [activeTextTrack]);
 
-//   // const randomIndex = Math.floor(Math.random() * 10000);
+  // Auto-scroll to active cue
+  React.useEffect(() => {
+    if (activeCues.length > 0 && activeRef.current) {
+      activeRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [activeCues]);
 
-//   return (
-//     <div
-//       ref={parentRef}
-//       className="List container h-screen w-full"
-//       style={{
-//         width: `600px`,
-//         overflow: "auto",
-//       }}
-//     >
-//       <div
-//         style={{
-//           height: `${rowVirtualizer.getTotalSize()}px`,
-//           width: "100%",
-//           position: "relative",
-//         }}
-//       >
-//         {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-//           console.log("test :: ", items[virtualRow.index]);
-//           return (
-//             <div
-//               key={virtualRow.index}
-//               className={virtualRow.index % 2 ? "ListItemOdd" : "ListItemEven"}
-//               style={{
-//                 position: "absolute",
-//                 top: 0,
-//                 left: 0,
-//                 width: "100%",
-//                 height: `${virtualRow.size}px`,
-//                 transform: `translateY(${virtualRow.start}px)`,
-//               }}
-//             >
-//               <p data-index={items[virtualRow.index].sentense_id}>
-//                 {Object.entries(items[virtualRow.index] as TranscriptWord).map(
-//                   (item, index) => {
-//                     return <span key={index}>{item[1]?.text}</span>;
-//                   }
-//                 )}
-//               </p>
-//             </div>
-//           );
-//         })}
-//       </div>
-//     </div>
-//   );
-// };
+  const handleWordClick = React.useCallback(
+    (word: SentenseWords) => {
+      console.log("phrase :: ", word.phrase);
+      console.log("phrase :: ", word?.word?.wid);
+      console.log("handleWordClick");
+      if (player) {
+        if (word?.word?.wid) {
+          player.pause();
+          addSelectedWord(word);
+          // addOrUpdateWordById(word.wid, word.text); //TODO: add word in indexeddb storage
+        } else if (word?.phrase?.wid) {
+          player.pause();
+          addSelectedWord(word);
+        }
+      }
+    },
+    [player, words]
+  );
 
-"use client";
-import React, { useMemo, useRef } from "react";
-import { useVirtualizer } from "@tanstack/react-virtual";
-import { EpisodeData, TranscriptWord } from "@/types/episode.interface";
-
-export const Transcript = ({ transcript }: { transcript: EpisodeData }) => {
-  const parentRef = useRef<HTMLDivElement>(null);
-
-  const items = useMemo(() => {
-    return Object.entries(transcript).map(([sentense_id, sentenceData]) => ({
-      sentense_id,
-      words: sentenceData.TranscriptWord.map(
-        ({ wid, text }: TranscriptWord) => ({
-          wid,
-          text,
-        })
-      ),
-    }));
-  }, [transcript]);
-
-  const rowVirtualizer = useVirtualizer({
-    count: items.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 35,
-    overscan: 5,
-  });
-
+  const isActiveSentence = React.useCallback(
+    (sentence: Sentense) => {
+      return activeCues.some(
+        (cue) =>
+          cue.startTime === sentence.start_time_sec &&
+          cue.endTime === sentence.end_time_sec
+      );
+    },
+    [activeCues]
+  );
   return (
-    <div
-      ref={parentRef}
-      className="List container h-screen w-full"
-      style={{
-        width: `600px`,
-        overflow: "auto",
-      }}
+    <ScrollShadow
+      as={"div"}
+      style={{ resize: "vertical", overflow: "hidden" }}
+      className="flex justify-center container  items-center  border rounded-lg w-[600px]"
     >
-      <div
-        style={{
-          height: `${rowVirtualizer.getTotalSize()}px`,
-          width: "100%",
-          position: "relative",
-        }}
-      >
-        {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-          const item = items[virtualRow.index];
+      <Virtuoso
+        useWindowScroll
+        className="h-screen"
+        style={{ width: 600, overflow: "hidden" }}
+        data={transcript}
+        itemContent={(index: number, sentence: Sentense) => {
+          const isActive = isActiveSentence(sentence);
           return (
             <div
-              key={item.sentense_id}
-              className={virtualRow.index % 2 ? "ListItemOdd" : "ListItemEven"}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: `${virtualRow.size}px`,
-                transform: `translateY(${virtualRow.start}px)`,
-              }}
+              className={` p-1 text-lg text-center ${
+                isActive ? "font-semibold bg-zinc-400 rounded-md" : ""
+              }`}
+              ref={isActive ? activeRef : null}
             >
-              <p data-index={item.sentense_id}>
-                {item.words.map((word, index) => (
-                  <span key={index}>{word.text} </span>
-                ))}
+              {/* //TODO:change wordIndex to id */}
+              <p className="text-black  p-3">
+                {sentence.sentense_words.map((word, wordIndex) => {
+                  console.log("tes :: ", word);
+                  return (
+                    <span
+                      key={`${sentence.sentense_id}-${wordIndex}`}
+                      className={`${
+                        words.some(
+                          (item) =>
+                            item?.word?.wid === word?.word?.wid &&
+                            item?.phrase?.wid === word.phrase?.wid
+                        )
+                          ? "bg-blue-400"
+                          : ""
+                      } cursor-pointer p-2 hover:bg-blue-400 px-[0.5px] rounded`}
+                      onClick={() => handleWordClick(word)}
+                    >
+                      {word?.phrase?.wid
+                        ? word.phrase?.content.map((phrase, index) => {
+                            return (
+                              <span key={index}>
+                                {phrase?.word?.text || phrase?.text}
+                              </span>
+                            );
+                          })
+                        : word?.word?.text || word?.text}
+                    </span>
+                  );
+                })}
               </p>
             </div>
           );
-        })}
-      </div>
-    </div>
+        }}
+      />
+    </ScrollShadow>
   );
 };
