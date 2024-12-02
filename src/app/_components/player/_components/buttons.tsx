@@ -1,57 +1,101 @@
 import {
-  CaptionButton,
-  FullscreenButton,
-  isTrackCaptionKind,
   MuteButton,
-  PIPButton,
   PlayButton,
   Tooltip,
   useMediaState,
+  SeekButton,
   type TooltipPlacement,
-} from '@vidstack/react';
+} from "@vidstack/react";
 import {
-  ClosedCaptionsIcon,
-  ClosedCaptionsOnIcon,
-  FullscreenExitIcon,
-  FullscreenIcon,
   MuteIcon,
   PauseIcon,
-  PictureInPictureExitIcon,
-  PictureInPictureIcon,
   PlayIcon,
+  QueueListIcon,
+  RepeatIcon,
+  SeekBackward15Icon,
+  SeekForward15Icon,
   VolumeHighIcon,
   VolumeLowIcon,
-} from '@vidstack/react/icons';
+} from "@vidstack/react/icons";
+import { ReactNode } from "react";
 
 export interface MediaButtonProps {
   tooltipPlacement: TooltipPlacement;
 }
 
 export const buttonClass =
-  'group ring-media-focus relative inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-md outline-none ring-inset hover:bg-white/20 data-[focus]:ring-4';
+  "group ring-media-focus  relative inline-flex flex justify-center items-center cursor-pointer items-center justify-center rounded-md outline-none ring-inset hover:bg-white/20 data-[focus]:ring-4";
 
 export const tooltipClass =
-  'animate-out fade-out slide-out-to-bottom-2 data-[visible]:animate-in data-[visible]:fade-in data-[visible]:slide-in-from-bottom-4 z-10 rounded-sm bg-black/90 px-2 py-0.5 text-sm font-medium text-white parent-data-[open]:hidden';
+  "animate-out fade-out slide-out-to-bottom-2 data-[visible]:animate-in data-[visible]:fade-in data-[visible]:slide-in-from-bottom-4 z-10 rounded-sm bg-black/90 px-2 py-0.5 text-sm font-medium text-white parent-data-[open]:hidden";
 
 export function Play({ tooltipPlacement }: MediaButtonProps) {
-  const isPaused = useMediaState('paused');
+  const isPaused = useMediaState("paused");
   return (
     <Tooltip.Root>
       <Tooltip.Trigger asChild>
         <PlayButton className={buttonClass}>
-          {isPaused ? <PlayIcon className="w-8 h-8" /> : <PauseIcon className="w-8 h-8" />}
+          {isPaused ? (
+            <PlayIcon className="w-12 h-12" />
+          ) : (
+            <PauseIcon className="w-12 h-12" />
+          )}
         </PlayButton>
       </Tooltip.Trigger>
       <Tooltip.Content className={tooltipClass} placement={tooltipPlacement}>
-        {isPaused ? 'Play' : 'Pause'}
+        {isPaused ? "Play" : "Pause"}
       </Tooltip.Content>
     </Tooltip.Root>
   );
 }
 
+export function Seek({ children }: { children: ReactNode }) {
+  return (
+    <Tooltip.Root>
+      <Tooltip.Trigger asChild>
+        <div
+          className={`flex cursor-pointer  justify-between items-center gap-2`}
+        >
+          <span className={`${buttonClass} p-1`}>
+            <SeekBackward15Icon className="w-8 h-8" />
+          </span>
+          {children}
+          <span className={`${buttonClass} p-1`}>
+            <SeekForward15Icon className="w-8 h-8" />
+          </span>
+        </div>
+      </Tooltip.Trigger>
+    </Tooltip.Root>
+  );
+}
+
+export function Repeat() {
+  return (
+    <Tooltip.Root>
+      <Tooltip.Trigger asChild>
+        <SeekButton className="flex justify-between items-center ">
+          <RepeatIcon className="h-8 w-8" />
+        </SeekButton>
+      </Tooltip.Trigger>
+    </Tooltip.Root>
+  );
+}
+
+export function TranscriptScroll() {
+  return (
+    <Tooltip.Root>
+      <Tooltip.Trigger asChild>
+        <SeekButton className="flex justify-between items-center">
+          <QueueListIcon className="h-8 w-8" />
+        </SeekButton>
+      </Tooltip.Trigger>
+    </Tooltip.Root>
+  );
+}
+
 export function Mute({ tooltipPlacement }: MediaButtonProps) {
-  const volume = useMediaState('volume'),
-    isMuted = useMediaState('muted');
+  const volume = useMediaState("volume"),
+    isMuted = useMediaState("muted");
   return (
     <Tooltip.Root>
       <Tooltip.Trigger asChild>
@@ -66,68 +110,7 @@ export function Mute({ tooltipPlacement }: MediaButtonProps) {
         </MuteButton>
       </Tooltip.Trigger>
       <Tooltip.Content className={tooltipClass} placement={tooltipPlacement}>
-        {isMuted ? 'Unmute' : 'Mute'}
-      </Tooltip.Content>
-    </Tooltip.Root>
-  );
-}
-
-export function Caption({ tooltipPlacement }: MediaButtonProps) {
-  const track = useMediaState('textTrack'),
-    isOn = track && isTrackCaptionKind(track);
-  return (
-    <Tooltip.Root>
-      <Tooltip.Trigger asChild>
-        <CaptionButton className={buttonClass}>
-          {isOn ? (
-            <ClosedCaptionsOnIcon className="w-8 h-8" />
-          ) : (
-            <ClosedCaptionsIcon className="w-8 h-8" />
-          )}
-        </CaptionButton>
-      </Tooltip.Trigger>
-      <Tooltip.Content className={tooltipClass} placement={tooltipPlacement}>
-        {isOn ? 'Closed-Captions Off' : 'Closed-Captions On'}
-      </Tooltip.Content>
-    </Tooltip.Root>
-  );
-}
-
-export function PIP({ tooltipPlacement }: MediaButtonProps) {
-  const isActive = useMediaState('pictureInPicture');
-  return (
-    <Tooltip.Root>
-      <Tooltip.Trigger asChild>
-        <PIPButton className={buttonClass}>
-          {isActive ? (
-            <PictureInPictureExitIcon className="w-8 h-8" />
-          ) : (
-            <PictureInPictureIcon className="w-8 h-8" />
-          )}
-        </PIPButton>
-      </Tooltip.Trigger>
-      <Tooltip.Content className={tooltipClass} placement={tooltipPlacement}>
-        {isActive ? 'Exit PIP' : 'Enter PIP'}
-      </Tooltip.Content>
-    </Tooltip.Root>
-  );
-}
-
-export function Fullscreen({ tooltipPlacement }: MediaButtonProps) {
-  const isActive = useMediaState('fullscreen');
-  return (
-    <Tooltip.Root>
-      <Tooltip.Trigger asChild>
-        <FullscreenButton className={buttonClass}>
-          {isActive ? (
-            <FullscreenExitIcon className="w-8 h-8" />
-          ) : (
-            <FullscreenIcon className="w-8 h-8" />
-          )}
-        </FullscreenButton>
-      </Tooltip.Trigger>
-      <Tooltip.Content className={tooltipClass} placement={tooltipPlacement}>
-        {isActive ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+        {isMuted ? "Unmute" : "Mute"}
       </Tooltip.Content>
     </Tooltip.Root>
   );
