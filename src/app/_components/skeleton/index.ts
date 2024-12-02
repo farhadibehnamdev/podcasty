@@ -1,0 +1,1 @@
+export { LineSkeleton } from "./skeleton";
