@@ -1,11 +1,11 @@
-import PodcasterEpisodes from "./_components/podcaster-episodes";
+import Episodes from "./_components/episodes";
 
-const Episodes = () => {
+const Page = () => {
   return (
     <div className="container flex justify-center items-center">
-      <PodcasterEpisodes />
+      <Episodes />
     </div>
   );
 };
 
-export default Episodes;
+export default Page;
