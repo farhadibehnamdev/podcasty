@@ -15,7 +15,6 @@ import {
 import { cn } from "@nextui-org/react";
 
 const menuItems = [
-  "About",
   "Blog",
   "Customers",
   "Pricing",
@@ -46,35 +45,40 @@ export const Header = () => {
 
       <NavbarBrand>
         <div className="rounded-full bg-foreground text-background"></div>
-        <span className="ml-2 font-medium">ACME</span>
+        <span className="ml-2 font-medium">Podcasty</span>
       </NavbarBrand>
       <NavbarContent
         className="hidden h-11 gap-4 rounded-full border-small border-default-200/20 bg-background/60 px-4 shadow-medium backdrop-blur-md backdrop-saturate-150 dark:bg-default-100/50 md:flex"
         justify="center"
       >
-        <NavbarItem>
-          <Link className="text-default-500" href="#" size="sm">
+        <NavbarItem isActive>
+          <Link
+            className="text-default-500"
+            color="foreground"
+            href="#"
+            size="sm"
+          >
             Home
           </Link>
         </NavbarItem>
         <NavbarItem>
           <Link className="text-default-500" href="#" size="sm">
-            Features
+            Categories
           </Link>
         </NavbarItem>
-        <NavbarItem isActive>
+        <NavbarItem>
           <Link aria-current="page" color="foreground" href="#" size="sm">
-            Customers
+            Hosts
           </Link>
         </NavbarItem>
         <NavbarItem>
           <Link className="text-default-500" href="#" size="sm">
-            About Us
+            Trends
           </Link>
         </NavbarItem>
         <NavbarItem>
           <Link className="text-default-500" href="#" size="sm">
-            Integrations
+            New
           </Link>
         </NavbarItem>
       </NavbarContent>
