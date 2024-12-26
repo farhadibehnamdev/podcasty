@@ -8,7 +8,7 @@ import { usePrevNextButtons } from "@/hooks/usePrevNextButtons";
 import { Image, Spacer } from "@nextui-org/react";
 import Link from "next/link";
 import { CarouselProps } from "@/types/carousel.type";
-
+import { EmblaCarouselType } from "embla-carousel";
 const options = { slidesToScroll: 1 };
 const Carousel = (props: CarouselProps) => {
   const { categoryTitle, data } = props;
@@ -18,7 +18,7 @@ const Carousel = (props: CarouselProps) => {
     nextBtnDisabled,
     onPrevButtonClick,
     onNextButtonClick,
-  } = usePrevNextButtons(emblaApi);
+  } = usePrevNextButtons(emblaApi as EmblaCarouselType);
 
   return (
     <section className={styles.embla}>
