@@ -24,7 +24,7 @@ export interface TimeSliderProps {
 
 export function Time() {
   return (
-    <TimeSlider.Root className="time-slider group relative mx-[20px] inline-flex h-15 w-full cursor-pointer touch-none select-none items-end outline-none">
+    <TimeSlider.Root className="time-slider w-full group relative mx-[20px] inline-flex h-15  cursor-pointer touch-none select-none items-end outline-none">
       <div
         className="last-child:mr-0 relative mr-0.5 flex h-full w-full items-center rounded-[1px]"
         style={{ contain: "layout style" }}
