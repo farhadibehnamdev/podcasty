@@ -1,22 +1,23 @@
+import { CarouselApi } from "@/types/carousel.type";
 import React, { useCallback, useEffect, useState } from "react";
 
-export const useDotButton = (carouselApi) => {
+export const useDotButton = (carouselApi: CarouselApi) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [scrollSnaps, setScrollSnaps] = useState([]);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
   const onDotButtonClick = useCallback(
-    (index) => {
+    (index: number) => {
       if (!carouselApi) return;
       carouselApi.scrollTo(index);
     },
     [carouselApi]
   );
 
-  const onInit = useCallback((carouselApi) => {
+  const onInit = useCallback((carouselApi: CarouselApi) => {
     setScrollSnaps(carouselApi.scrollSnapList());
   }, []);
 
-  const onSelect = useCallback((carouselApi) => {
+  const onSelect = useCallback((carouselApi: CarouselApi) => {
     setSelectedIndex(carouselApi.selectedScrollSnap());
   }, []);
 

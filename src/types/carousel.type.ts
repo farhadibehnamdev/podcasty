@@ -11,3 +11,10 @@ export type ArrowButtonProps = {
   disabled: boolean;
   children?: React.ReactNode;
 };
+
+export type CarouselApi = {
+  scrollTo: (index: number) => void;
+  scrollSnapList: () => number[];
+  selectedScrollSnap: () => number;
+  on: (event: string, callback: (api: CarouselApi) => void) => CarouselApi;
+};
