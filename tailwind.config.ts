@@ -28,9 +28,15 @@ export default {
   ],
 } satisfies Config;
 
-function customVariants({ addVariant, matchVariant }) {
+function customVariants({
+  addVariant,
+  matchVariant,
+}: {
+  addVariant: (name: string, options: string[]) => void;
+  matchVariant: (name: string, cb: (value: string) => string) => void;
+}) {
   // Strict version of `.group` to help with nesting.
-  matchVariant("parent-data", (value) => `.parent[data-${value}] > &`);
+  matchVariant("parent-data", (value: string) => `.parent[data-${value}] > &`);
 
   addVariant("hocus", ["&:hover", "&:focus-visible"]);
   addVariant("group-hocus", [".group:hover &", ".group:focus-visible &"]);
