@@ -39,7 +39,7 @@ export const Drawer: React.FC = () => {
   console.log("latest :: ", latest?.word);
   const playPronunce = () => {
     const word = new Audio(
-      `https://dict.youdao.com/dictvoice?type=0&audio=${latest?.word}`
+      `${latest?.word} ? https://dict.youdao.com/dictvoice?type=0&audio=${latest?.word} : ""`
     );
     word.play();
   };
@@ -91,11 +91,15 @@ export const Drawer: React.FC = () => {
                       </div>
                       <div className="flex justify-start gap-3">
                         <span>{latest?.phonetic}</span>
-                        <Volume1
-                          onClick={playPronunce}
-                          type="button"
-                          className="cursor-pointer"
-                        />
+                        {latest?.word ? (
+                          <Volume1
+                            onClick={playPronunce}
+                            type="button"
+                            className="cursor-pointer"
+                          />
+                        ) : (
+                          ""
+                        )}
                       </div>
                     </div>
                   </CardBody>
