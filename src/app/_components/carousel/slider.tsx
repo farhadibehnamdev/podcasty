@@ -2,8 +2,14 @@ import { Image } from "@nextui-org/react";
 import styles from "./slider.module.css";
 import useEmblaCarousel from "embla-carousel-react";
 import React from "react";
-
-export const Slider = (props) => {
+type options = {
+  loop: boolean;
+};
+type SliderProp = {
+  slides: number[];
+  options: options;
+};
+export const Slider = (props: SliderProp) => {
   const { slides, options } = props;
   const [emblaRef] = useEmblaCarousel(options);
 
