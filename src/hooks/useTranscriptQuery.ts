@@ -4,11 +4,11 @@ import { EpisodeData } from "@/types/episode.interface";
 import { useQuery } from "@tanstack/react-query";
 import { RawAxiosRequestHeaders } from "axios";
 type EpisodeId = {
-  param_episodeid: string;
+  param_episodeid: number;
 };
 
 const getEpisodeData = async (param_episodeid: EpisodeId) => {
-  const url = `${API_URL}/rpc/get_episodedata`;
+  const url = `${API_URL}/rpc/get_content`;
   const headers: RawAxiosRequestHeaders = {
     Authorization: `Bearer ${API_KEY}`,
     apiKey: API_KEY,
@@ -21,7 +21,7 @@ const getEpisodeData = async (param_episodeid: EpisodeId) => {
   return response;
 };
 
-const useTranscriptQuery = (id: string) => {
+const useTranscriptQuery = (id: number) => {
   return useQuery<EpisodeData[]>({
     queryKey: ["transcript", "episode", id],
     queryFn: () => getEpisodeData({ param_episodeid: id }),
