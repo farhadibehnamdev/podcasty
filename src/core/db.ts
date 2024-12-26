@@ -20,8 +20,6 @@ export const getWordById = async (wid: number) => {
 };
 
 export const updateWord = async (wid: number, updates: UserWords) => {
-  updates.last_modified = new Date();
-  updates.is_synced = false;
   await db.user_words.update(wid, updates);
 };
 
