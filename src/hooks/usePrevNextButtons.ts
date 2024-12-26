@@ -1,6 +1,7 @@
+import { CarouselProp } from "@/types/carousel.type";
 import { useCallback, useEffect, useState } from "react";
 
-export const usePrevNextButtons = (carouselApi) => {
+export const usePrevNextButtons = (carouselApi: CarouselProp) => {
   const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
   const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
 
@@ -14,7 +15,7 @@ export const usePrevNextButtons = (carouselApi) => {
     carouselApi.scrollNext();
   }, [carouselApi]);
 
-  const onSelect = useCallback((carouselApi) => {
+  const onSelect = useCallback((carouselApi: CarouselProp) => {
     setPrevBtnDisabled(!carouselApi.canScrollPrev());
     setNextBtnDisabled(!carouselApi.canScrollNext());
   }, []);

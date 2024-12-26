@@ -1,13 +1,8 @@
-import { API_KEY, API_LOCAL, API_PRODUCTION_EDGE } from "@/configs/globals";
+import { API_KEY, API_PRODUCTION_EDGE } from "@/configs/globals";
 import { createData } from "@/core/http-service";
-import { UserWords } from "@/core/models/user-words";
 import { WordsSelected } from "@/types/words-selected.interface";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  AxiosHeaders,
-  RawAxiosRequestHeaders,
-  RawAxiosResponseHeaders,
-} from "axios";
+import { useMutation } from "@tanstack/react-query";
+import { RawAxiosRequestHeaders, RawAxiosResponseHeaders } from "axios";
 
 interface SetWordStatusParams {
   id: number;
