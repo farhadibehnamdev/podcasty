@@ -9,7 +9,7 @@ type GetPodcastHost = {
 };
 
 const getPodcastHost = async (param_slug: GetPodcastHost) => {
-  const url = `${API_URL}/rpc/get_podcasthost`;
+  const url = `${API_URL}/rpc/get_podcast_host_info`;
   const headers: RawAxiosRequestHeaders = {
     Authorization: `Bearer ${API_KEY}`,
     apiKey: API_KEY,
