@@ -15,9 +15,7 @@ import { LineSkeleton } from "../skeleton";
 // Main Player component
 export const Player = () => {
   const { id } = useParams();
-  const { data, error, isFetching, isLoading } = useTranscriptQuery(
-    id as string
-  );
+  const { data, error, isFetching, isLoading } = useTranscriptQuery(Number(id));
   const player = React.useRef<MediaPlayerInstance>(null);
   const transformedContent = React.useMemo(() => {
     if (data && Array.isArray(data) && data.length > 0) {
@@ -37,7 +35,7 @@ export const Player = () => {
         })),
       };
     }
-  }, [data]); //
+  }, [data]);
 
   return (
     <MediaPlayer
