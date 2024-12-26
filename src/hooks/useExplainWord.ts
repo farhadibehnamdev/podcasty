@@ -29,7 +29,7 @@ const getWordMeaning = async (requestWord: RequestWordExplanation) => {
     RequestWordExplanation,
     ResponseWordExplanation
   >(url, requestWord, headers);
-  return response.data;
+  return response;
 };
 
 export const useExplainWord = () => {
