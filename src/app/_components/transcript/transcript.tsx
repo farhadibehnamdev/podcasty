@@ -23,7 +23,6 @@ export const Transcript = ({ transcript }: { transcript: Sentense[] }) => {
   const activeTextTrack = useActiveTextTrack("captions");
   const activeCues = useActiveTextCues(activeTextTrack);
   const player = useMediaPlayer();
-  //@typescript-eslint/no-unused-vars
   const [allCue, setAllCues] = React.useState<VTTCue[]>([]);
   const activeRef = React.useRef<HTMLDivElement>(null);
   const { addSelectedWord, words } = useUserSelectedWordStore((state) => state);
