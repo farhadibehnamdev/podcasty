@@ -6,12 +6,12 @@ import { DrawerProvider } from "@/providers/drawer-provider";
 import { PodcastHeader } from "@/app/_components/header/podcast-header";
 
 const geistSans = localFont({
-  src: "../../fonts/GeistVF.woff",
+  src: "../../../app/fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
 const geistMono = localFont({
-  src: "../../fonts/GeistMonoVF.woff",
+  src: "../../../app/fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
 });
