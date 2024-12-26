@@ -15,7 +15,6 @@ import { useSyncUserWord } from "@/hooks/useSyncUserWord";
 import { useSetWordStatus } from "@/hooks/useSetWordStatus";
 import { WordsSelected } from "@/types/words-selected.interface";
 import { useExplainWord } from "@/hooks/useExplainWord";
-import { useWordExplanationStore } from "@/stores/word-explanation.store";
 
 //--TODO:Let’s refactor the code to reduce technical debt.
 export const Transcript = ({ transcript }: { transcript: Sentense[] }) => {
@@ -24,25 +23,21 @@ export const Transcript = ({ transcript }: { transcript: Sentense[] }) => {
   const activeTextTrack = useActiveTextTrack("captions");
   const activeCues = useActiveTextCues(activeTextTrack);
   const player = useMediaPlayer();
-  const [allCues, setAllCues] = React.useState<VTTCue[]>([]);
+  //@typescript-eslint/no-unused-vars
+  const [allCue, setAllCues] = React.useState<VTTCue[]>([]);
   const activeRef = React.useRef<HTMLDivElement>(null);
   const { addSelectedWord, words } = useUserSelectedWordStore((state) => state);
   const { onOpen } = useContext(DrawerContext);
   const { data } = useSyncUserWord(Number(id));
-  const { mutate, status } = useSetWordStatus();
-  const {
-    mutate: mutateWordExp,
-    status: wordExpStatus,
-    variables,
-  } = useExplainWord();
-  const { setWordExplanation } = useWordExplanationStore((state) => state);
+  const { mutate } = useSetWordStatus();
+  const { mutate: mutateWordExp, status: wordExpStatus } = useExplainWord();
   React.useEffect(() => {
     if (data) {
       data.forEach((element: any) => {
         addSelectedWord({ wid: element.word_id });
       });
     }
-  }, [data]);
+  }, [data, addSelectedWord]);
   // Get all cues when text track is loaded
   React.useEffect(() => {
     if (activeTextTrack) {

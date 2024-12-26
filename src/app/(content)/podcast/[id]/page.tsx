@@ -1,5 +1,3 @@
-import { Drawer } from "@/app/_components/drawer";
-import { Player } from "@/app/_components/player/player";
 import Podcast from "./_components/podcast";
 
 const Page = () => {

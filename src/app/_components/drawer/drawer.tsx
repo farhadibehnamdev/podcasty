@@ -1,7 +1,6 @@
 "use client";
-import React, { ReactNode, useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import {
-  Button,
   Card,
   CardBody,
   Chip,
@@ -13,9 +12,8 @@ import {
   Tabs,
 } from "@nextui-org/react";
 import { DrawerContext } from "@/context";
-import { CircleCheck, Heart, Volume1 } from "lucide-react";
-import { useWordExplanationStore } from "@/stores/word-explanation.store";
 import { Mutation, useMutationState } from "@tanstack/react-query";
+import { Volume1 } from "lucide-react";
 
 interface ResponseMutationWordExplanation {
   word: string;
@@ -36,7 +34,6 @@ export const Drawer: React.FC = () => {
     select: (mutation: Mutation) => mutation.state.data,
   });
   const latest = data[data.length - 1] as ResponseMutationWordExplanation;
-  console.log("latest :: ", latest?.word);
   const playPronunce = () => {
     const word = new Audio(
       `${latest?.word} ? https://dict.youdao.com/dictvoice?type=0&audio=${latest?.word} : ""`

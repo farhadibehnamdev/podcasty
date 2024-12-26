@@ -3,7 +3,6 @@ import "@/app/globals.css";
 import NextUIProviderClient from "@/providers/nextui-provider";
 import QueryProvider from "@/providers/react-query-provider";
 import { DrawerProvider } from "@/providers/drawer-provider";
-import { PodcastHeader } from "@/app/_components/header/podcast-header";
 
 const geistSans = localFont({
   src: "../../../app/fonts/GeistVF.woff",
