@@ -10,9 +10,15 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
   Link,
-  Button,
+  Dropdown,
+  DropdownTrigger,
+  Badge,
+  DropdownMenu,
+  DropdownItem,
+  Avatar,
 } from "@nextui-org/react";
 import { cn } from "@nextui-org/react";
+import { BookHeadphones } from "lucide-react";
 
 const menuItems = [
   "Blog",
@@ -31,21 +37,24 @@ export const Header = () => {
     <Navbar
       isBordered
       classNames={{
-        base: cn("border-default-100", {
+        base: cn("border-default-100 ", {
           "bg-default-200/50 dark:bg-default-100/50": isMenuOpen,
         }),
-        wrapper: "w-full justify-center bg-transparent",
+        wrapper: "w-full justify-center  bg-transparent",
         item: "hidden md:flex",
       }}
       height="60px"
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
+      className="flex justify-items-center items-center"
     >
       <NavbarMenuToggle className="text-default-400 md:hidden" />
 
-      <NavbarBrand>
-        <div className="rounded-full bg-foreground text-background"></div>
-        <span className="ml-2 font-medium">Podcasty</span>
+      <NavbarBrand className="text-zinc-600">
+        <div className="rounded-md  drop-shadow-md">
+          <BookHeadphones size={43} />
+        </div>
+        <span className="ml-1 font-medium drop-shadow-md">Podbook</span>
       </NavbarBrand>
       <NavbarContent
         className="hidden h-11 gap-4 rounded-full border-small border-default-200/20 bg-background/60 px-4 shadow-medium backdrop-blur-md backdrop-saturate-150 dark:bg-default-100/50 md:flex"
@@ -83,25 +92,44 @@ export const Header = () => {
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
-        <NavbarItem className="ml-2 !flex gap-2">
-          <Button
-            className="bg-default-100 text-default-700 sm:bg-transparent sm:text-default-500"
-            radius="full"
-            variant="light"
-          >
-            Login
-          </Button>
-          <Button
-            className="hidden border-small border-secondary-500/20 bg-secondary-500/10 text-secondary-800 sm:flex"
-            color="secondary"
-            radius="full"
-            style={{
-              boxShadow: "inset 0 0 4px #bf97ff70",
-            }}
-            variant="flat"
-          >
-            Start Free Trial
-          </Button>
+        <NavbarItem className="px-2">
+          <Dropdown placement="bottom-end">
+            <DropdownTrigger>
+              <button className="-mt-2 h-8 w-8 outline-none transition-transform">
+                <Badge
+                  className="border-transparent"
+                  color="success"
+                  content=""
+                  placement="bottom-right"
+                  shape="circle"
+                  size="sm"
+                >
+                  <Avatar
+                    isBordered
+                    color="secondary"
+                    src="https://i.pravatar.cc/150?u=a04258114e29026302d"
+                  />
+                </Badge>
+              </button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Profile Actions" variant="flat">
+              <DropdownItem key="profile" className="h-14 gap-2">
+                <p className="font-semibold">Signed in as</p>
+                <p className="font-semibold">johndoe@example.com</p>
+              </DropdownItem>
+              <DropdownItem key="settings">My Settings</DropdownItem>
+              <DropdownItem key="team_settings">Team Settings</DropdownItem>
+              <DropdownItem key="analytics">Analytics</DropdownItem>
+              <DropdownItem key="system">System</DropdownItem>
+              <DropdownItem key="configurations">Configurations</DropdownItem>
+              <DropdownItem key="help_and_feedback">
+                Help & Feedback
+              </DropdownItem>
+              <DropdownItem key="logout" color="danger">
+                Log Out
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </NavbarItem>
       </NavbarContent>
       <NavbarMenu

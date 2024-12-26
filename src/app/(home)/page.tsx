@@ -1,13 +1,13 @@
-import NewPodcast from "./_components/new-podcast";
-import PodcastHost from "./_components/podcast-host";
+import { ProgressTracking } from "../_components/progress-tracking";
+import CourseMaterial from "./_components/course-materials";
 
-const Explore = () => {
+const Home = () => {
   return (
-    <>
-      <NewPodcast />
-      <PodcastHost />
-    </>
+    <section className="container max-w-[60rem] flex-col">
+      <ProgressTracking />
+      <CourseMaterial />
+    </section>
   );
 };
 
-export default Explore;
+export default Home;
