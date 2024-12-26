@@ -7,9 +7,10 @@ import useEmblaCarousel from "embla-carousel-react";
 import { usePrevNextButtons } from "@/hooks/usePrevNextButtons";
 import { Image, Spacer } from "@nextui-org/react";
 import Link from "next/link";
+import { CarouselProps } from "@/types/carousel.type";
 
 const options = { slidesToScroll: "auto" };
-const Carousel = (props) => {
+const Carousel = (props: CarouselProps) => {
   const { categoryTitle, data } = props;
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
   const {

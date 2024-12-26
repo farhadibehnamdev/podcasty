@@ -1,11 +1,9 @@
-import { ProgressTracking } from "../_components/progress-tracking";
-import CourseMaterial from "./_components/course-materials";
+import PodcastHost from "./_components/podcast-host";
 
 const Home = () => {
   return (
     <section className="container max-w-[60rem] flex-col">
-      <ProgressTracking />
-      <CourseMaterial />
+      <PodcastHost />
     </section>
   );
 };

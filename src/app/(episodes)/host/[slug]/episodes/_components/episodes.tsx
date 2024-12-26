@@ -27,7 +27,6 @@ const Episodes = () => {
                 width={300}
                 height={300}
               />
-              <Button>Latest Episodes</Button>
             </div>
             <div className="flex flex-col justify-first w-full md:w-2/3">
               <h2 className="text-xl font-bold mb-4">{data.title}</h2>

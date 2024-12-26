@@ -1,6 +1,7 @@
+import { ArrowButtonProps } from "@/types/carousel.type";
 import React from "react";
 
-export const PrevButton = (props) => {
+export const PrevButton = (props: ArrowButtonProps) => {
   const { children, ...restProps } = props;
 
   return (
@@ -20,7 +21,7 @@ export const PrevButton = (props) => {
   );
 };
 
-export const NextButton = (props) => {
+export const NextButton = (props: ArrowButtonProps) => {
   const { children, ...restProps } = props;
 
   return (

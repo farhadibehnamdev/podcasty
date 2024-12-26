@@ -2,6 +2,7 @@ export interface Host {
   image_url: string;
   title: string;
   id: string;
+  slug: string;
 }
 export interface Hosts {
   count: number;
