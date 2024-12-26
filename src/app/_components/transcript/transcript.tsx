@@ -5,20 +5,44 @@ import {
   useActiveTextTrack,
   useMediaPlayer,
 } from "@vidstack/react";
-import React from "react";
+import React, { useContext } from "react";
 import { Virtuoso } from "react-virtuoso";
 import { useUserSelectedWordStore } from "@/stores/word-selected.store";
+import { DrawerContext } from "@/context";
+import { usePathname } from "next/navigation";
+import { formSentense, formWordPhrase } from "@/utils/form-sentence";
+import { useSyncUserWord } from "@/hooks/useSyncUserWord";
+import { useSetWordStatus } from "@/hooks/useSetWordStatus";
+import { WordsSelected } from "@/types/words-selected.interface";
+import { useExplainWord } from "@/hooks/useExplainWord";
+import { useWordExplanationStore } from "@/stores/word-explanation.store";
+
+//--TODO:Let’s refactor the code to reduce technical debt.
 export const Transcript = ({ transcript }: { transcript: Sentense[] }) => {
+  const router = usePathname();
+  const [ctype, id] = router.split(/[ /]+/).filter(Boolean);
   const activeTextTrack = useActiveTextTrack("captions");
   const activeCues = useActiveTextCues(activeTextTrack);
   const player = useMediaPlayer();
   const [allCues, setAllCues] = React.useState<VTTCue[]>([]);
   const activeRef = React.useRef<HTMLDivElement>(null);
   const { addSelectedWord, words } = useUserSelectedWordStore((state) => state);
-
+  const { onOpen } = useContext(DrawerContext);
+  const { data } = useSyncUserWord(Number(id));
+  const { mutate, status } = useSetWordStatus();
+  const {
+    mutate: mutateWordExp,
+    status: wordExpStatus,
+    variables,
+  } = useExplainWord();
+  const { setWordExplanation } = useWordExplanationStore((state) => state);
   React.useEffect(() => {
-    console.log("words :: ", words);
-  }, [words]);
+    if (data) {
+      data.forEach((element: any) => {
+        addSelectedWord({ wid: element.word_id });
+      });
+    }
+  }, [data]);
   // Get all cues when text track is loaded
   React.useEffect(() => {
     if (activeTextTrack) {
@@ -37,18 +61,69 @@ export const Transcript = ({ transcript }: { transcript: Sentense[] }) => {
   }, [activeCues]);
 
   const handleWordClick = React.useCallback(
-    (word: SentenseWords) => {
-      console.log("phrase :: ", word.phrase);
-      console.log("phrase :: ", word?.word?.wid);
-      console.log("handleWordClick");
+    (word: SentenseWords, sentence: Sentense) => {
       if (player) {
         if (word?.word?.wid) {
+          console.log("first :: ");
           player.pause();
-          addSelectedWord(word);
-          // addOrUpdateWordById(word.wid, word.text); //TODO: add word in indexeddb storage
+          onOpen();
+          addSelectedWord({ wid: word?.word?.wid });
+          const data = {
+            wid: word.word.wid,
+            sentense: formSentense(sentence.sentense_words),
+            start_time: sentence.start_time_sec,
+            end_time: sentence.end_time_sec,
+            cid: id,
+            ctype: ctype,
+          } as WordsSelected;
+          mutate({ id: Number(id), userWord: data });
+
+          mutateWordExp({
+            currentSentense: formSentense(sentence.sentense_words),
+            topic: "",
+            word: word.word.text,
+            nextSentense: formSentense(
+              transcript[sentence.sentense_id + 1].sentense_words
+            ),
+            perviousSentense: formSentense(
+              transcript[sentence.sentense_id - 1].sentense_words
+            ),
+            content_type: ctype,
+            content_id: Number(id),
+          });
+          // addOrUpdateWordById({ wordSelected: data }); //TODO: add word in indexeddb storage
         } else if (word?.phrase?.wid) {
+          console.log("word phrase :: ", word.phrase);
           player.pause();
-          addSelectedWord(word);
+          addSelectedWord({ wid: word.phrase.wid });
+          onOpen();
+
+          const data = {
+            wid: word.phrase.wid,
+            sentense: formSentense(sentence.sentense_words),
+            start_time: sentence.start_time_sec,
+            end_time: sentence.end_time_sec,
+            cid: id,
+            ctype: ctype,
+          } as WordsSelected;
+          mutate({ id: Number(id), userWord: data });
+
+          mutateWordExp({
+            currentSentense: formSentense(sentence.sentense_words),
+            topic: "",
+            word: formWordPhrase(word.phrase),
+            nextSentense: formSentense(
+              transcript[sentence.sentense_id + 1].sentense_words
+            ),
+            perviousSentense: formSentense(
+              transcript[sentence.sentense_id - 1].sentense_words
+            ),
+            content_type: ctype,
+            content_id: Number(id),
+          });
+          // addOrUpdateWordById({ wordSelected: data }); //TODO: add word in indexeddb storage
+
+          addSelectedWord({ wid: word?.phrase.wid });
         }
       }
     },
@@ -68,8 +143,8 @@ export const Transcript = ({ transcript }: { transcript: Sentense[] }) => {
   return (
     <ScrollShadow
       as={"div"}
-      style={{ resize: "vertical", overflow: "hidden" }}
-      className="flex justify-center container  items-center  border rounded-lg w-[600px]"
+      style={{ resize: "vertical" }}
+      className="flex justify-center container  items-center  w-[650px]"
     >
       <Virtuoso
         useWindowScroll
@@ -85,23 +160,25 @@ export const Transcript = ({ transcript }: { transcript: Sentense[] }) => {
               }`}
               ref={isActive ? activeRef : null}
             >
-              {/* //TODO:change wordIndex to id */}
-              <p className="text-black  p-3">
+              <p className="text-black  p-3 select-none underline-offset-1 ">
                 {sentence.sentense_words.map((word, wordIndex) => {
-                  console.log("tes :: ", word);
                   return (
                     <span
                       key={`${sentence.sentense_id}-${wordIndex}`}
                       className={`${
                         words.some(
                           (item) =>
-                            item?.word?.wid === word?.word?.wid &&
-                            item?.phrase?.wid === word.phrase?.wid
+                            item?.wid === word?.word?.wid ||
+                            item?.wid === word?.phrase?.wid
                         )
-                          ? "bg-blue-400"
-                          : ""
-                      } cursor-pointer p-2 hover:bg-blue-400 px-[0.5px] rounded`}
-                      onClick={() => handleWordClick(word)}
+                          ? "text-blue-500 font-semibold "
+                          : word.text === " "
+                          ? ""
+                          : "hover:bg-blue-400"
+                      } cursor-pointer p-2 px-[0.5px] rounded`}
+                      onClick={() => {
+                        handleWordClick(word, sentence);
+                      }}
                     >
                       {word?.phrase?.wid
                         ? word.phrase?.content.map((phrase, index) => {
