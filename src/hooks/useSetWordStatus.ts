@@ -26,7 +26,7 @@ const setWordStatus = async ({ id, userWord }: SetWordStatusParams) => {
       userWord: {
         ...userWord,
         status: "unknown",
-        user_id: "1a20da04-4a6a-495c-bffc-353e806d30a8",
+        user_id: "0ebebe19-32c4-4384-b91b-9642dc42c080",
       },
     },
     headers
