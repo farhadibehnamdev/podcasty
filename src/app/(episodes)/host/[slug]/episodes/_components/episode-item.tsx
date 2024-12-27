@@ -13,7 +13,7 @@ export const EpisodeItem = ({
       {episodes.data.map((episode) => {
         return (
           <ListboxItem
-            onPress={() => router.push(`/podcast/${creator}/${episode.id}`)}
+            onPress={() => router.push(`/podcast/${episode.id}`)}
             showDivider
             key={episode.id}
           >
