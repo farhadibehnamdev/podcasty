@@ -9,7 +9,7 @@ import {
 import { AudioLayout } from "./_components/layouts/audio-layout";
 import useTranscriptQuery from "@/hooks/useTranscriptQuery";
 import { useParams } from "next/navigation";
-import { Transcript } from "../transcript/transcript";
+import { Transcript } from "../transcript";
 import { LineSkeleton } from "../skeleton";
 
 // Main Player component

@@ -17,17 +17,13 @@ export const formSentense = (words: SentenseWords[]) => {
       });
     }
   });
-  console.log("tees :: ", sentense);
   return sentense;
 };
 
 export const formWordPhrase = (words: Phrasal) => {
-  console.log("phhh : ", words);
   let word = "";
   words.content.forEach((item, index) => {
-    console.log("itemmm :", item?.word?.text);
     word += item?.word?.text ? item.word.text : " ";
   });
-  console.log("www : ", word);
   return word;
 };

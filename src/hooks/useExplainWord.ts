@@ -15,8 +15,17 @@ interface RequestWordExplanation {
 }
 
 interface ResponseWordExplanation {
-  explain: string;
+  word: string;
+  translation: string;
   examples: string[];
+  synonyms: string[];
+  explanation: string;
+  level: string;
+  audio: string;
+}
+
+interface ResponseWordExplanationData {
+  data: ResponseWordExplanation;
 }
 
 const getWordMeaning = async (requestWord: RequestWordExplanation) => {
@@ -27,9 +36,9 @@ const getWordMeaning = async (requestWord: RequestWordExplanation) => {
   };
   const response = await createData<
     RequestWordExplanation,
-    ResponseWordExplanation
+    ResponseWordExplanationData
   >(url, requestWord, headers);
-  return response;
+  return response.data;
 };
 
 export const useExplainWord = () => {
