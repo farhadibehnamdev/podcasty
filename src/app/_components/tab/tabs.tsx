@@ -1,5 +1,11 @@
 import { ResponseMutationWordExplanation } from "@/types/response-word.interface";
-import { Card, CardBody, Tab, Tabs as TabsNextUI } from "@nextui-org/react";
+import {
+  Card,
+  CardBody,
+  Spinner,
+  Tab,
+  Tabs as TabsNextUI,
+} from "@nextui-org/react";
 import { Mutation, useMutationState } from "@tanstack/react-query";
 import { Volume1 } from "lucide-react";
 import React from "react";
@@ -11,15 +17,23 @@ export const Tabs = () => {
   });
   const latest = data[data.length - 1] as ResponseMutationWordExplanation;
   const playPronunce = () => {
-    const word = new Audio(
-      `${latest?.word} ? https://dict.youdao.com/dictvoice?type=0&audio=${latest?.word} : "No Word"`
-    );
-    word.play();
+    if (latest?.word) {
+      const audioUrl = `https://dict.youdao.com/dictvoice?type=0&audio=${latest.word}`;
+      const word = new Audio(audioUrl);
+      word.onerror = (e) => {
+        console.error("Failed to load audio:", e);
+      };
+      word.play().catch((e) => {
+        console.error("Error playing audio:", e);
+      });
+    } else {
+      console.error("No word to play");
+    }
   };
   return (
     <TabsNextUI aria-label="Options" size="lg" fullWidth>
       {latest?.level}
-      <Tab key="dictionary" title="Dictionary">
+      <Tab key="dictionary" title="Dictionary" className="text-center">
         {!!latest?.word ? (
           <iframe
             src={`https://api.s1.zabanshenas.com/api/v1/dictionary?dictionary=cambridgeen&word=${latest?.word}`}
@@ -27,7 +41,7 @@ export const Tabs = () => {
             className="h-[80vh]"
           ></iframe>
         ) : (
-          "Loading..."
+          <Spinner color="current" className="text-center mt-10" />
         )}
       </Tab>
       <Tab key="ai" title="AI">
