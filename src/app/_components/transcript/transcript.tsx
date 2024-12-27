@@ -14,9 +14,7 @@ import { formSentense, formWordPhrase } from "@/utils/form-sentence";
 import { useSyncUserWord } from "@/hooks/useSyncUserWord";
 import { useSetWordStatus } from "@/hooks/useSetWordStatus";
 import { WordsSelected } from "@/types/words-selected.interface";
-import { useExplainWord } from "@/hooks/useExplainWord";
-
-//--TODO:Let’s refactor the code to reduce technical debt.
+import { useExplainWord } from "@/hooks/useExplainWord"; //--TODO:Let’s refactor the code to reduce technical debt.
 export const Transcript = ({ transcript }: { transcript: Sentense[] }) => {
   const router = usePathname();
   const [ctype, id] = router.split(/[ /]+/).filter(Boolean);
@@ -27,16 +25,16 @@ export const Transcript = ({ transcript }: { transcript: Sentense[] }) => {
   const activeRef = React.useRef<HTMLDivElement>(null);
   const { addSelectedWord, words } = useUserSelectedWordStore((state) => state);
   const { onOpen } = useContext(DrawerContext);
-  const { data } = useSyncUserWord(Number(id));
+  const { data: response } = useSyncUserWord(Number(id));
   const { mutate } = useSetWordStatus();
   const { mutate: mutateWordExp, status: wordExpStatus } = useExplainWord();
   React.useEffect(() => {
-    if (data) {
-      data.forEach((element: any) => {
+    if (response) {
+      response?.data?.forEach((element: any) => {
         addSelectedWord({ wid: element.word_id });
       });
     }
-  }, [data, addSelectedWord]);
+  }, [response, addSelectedWord]);
   // Get all cues when text track is loaded
   React.useEffect(() => {
     if (activeTextTrack) {
