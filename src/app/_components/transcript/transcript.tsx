@@ -56,7 +56,6 @@ export const Transcript = ({ transcript }: { transcript: Sentense[] }) => {
     (word: SentenseWords, sentence: Sentense) => {
       if (player) {
         if (word?.word?.wid) {
-          console.log("first :: ");
           player.pause();
           onOpen();
           addSelectedWord({ wid: word?.word?.wid });
@@ -85,7 +84,6 @@ export const Transcript = ({ transcript }: { transcript: Sentense[] }) => {
           });
           // addOrUpdateWordById({ wordSelected: data }); //TODO: add word in indexeddb storage
         } else if (word?.phrase?.wid) {
-          console.log("word phrase :: ", word.phrase);
           player.pause();
           addSelectedWord({ wid: word.phrase.wid });
           onOpen();
